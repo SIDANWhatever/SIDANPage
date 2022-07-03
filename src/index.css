@@ -5,6 +5,33 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --text-primary: white;
+  --text-secondary: aquamarine;
+  --bg-primary: #282c34;
+  --bg-focus: #1f2228;
+  --bg-secondary: white;
+  --transition-speed: 600ms;
+  --title-size: 40px;
+  --middle-title-size: 30px;
+  --post-size: 22px;
+  --content-size: 15px;
+  --theme-fill-dark: rgb(209, 120, 209);
+  --theme-fill-light: var(--text-primary);
+  --light-opacity: 0.5;
+  --dark-opacity: 1;
+
+}
+
+[data-theme='light'] {
+  --text-primary: white;
+  --text-secondary: aquamarine;
+  --bg-primary: #5a606e;
+  --bg-secondary: white;
+  --bg-focus: #8d96ac;
+  --theme-fill-dark: var(--text-primary);
+  --theme-fill-light: rgb(253, 202, 140);
+  --light-opacity: 1;
+  --dark-opacity: 0.5;
 }
 
 code {

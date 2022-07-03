@@ -1,0 +1,124 @@
+.l {
+  height: 100vh;
+  width: 100vw;
+  --frame-opacity: 0.4;
+}
+
+.l .l-content {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.l .l-content .l-content-words {
+  flex: 1;
+  position: relative;
+  color: aliceblue;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+
+  /* margin: 25px; */
+}
+
+.l .l-content .l-content-words-h {
+  position: relative;
+  padding: 30px 0 0 30px;
+  flex: 1;
+  font-size: 50px;
+  font-weight: 700;
+}
+
+.l .l-content .l-content-words-p {
+  position: relative;
+  padding: 0 30px 0 30px;
+  flex: 5;
+  font-size: 25px;
+  font-weight: 300;
+}
+
+.l .l-content .l-content-services {
+  display: flex;
+  flex:1 ;
+  height: 100%;
+  width: 100%;
+}
+
+.l .l-content .l-content-service-card-l {
+  flex:1 ;
+  display: flex;
+  flex-direction: column;
+  margin: 5% 0 0 5%;
+}
+
+.l .l-content .l-content-service-card-r {
+  flex:1 ;
+  display: flex;
+  flex-direction: column;
+  margin: 5% 0 0 0;
+}
+
+.l .l-content .l-content-service-card {
+  flex:1;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.l .l-content .l-service-card-frame {
+  height: 90%;
+  width: 90%;
+  background-color: rgba(255,255,255,var(--frame-opacity));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+[l-frame-focus="true"],
+.l .l-content .l-service-card-frame:hover {
+  --frame-opacity: 0.7;
+  transition: var(--transition-speed);
+}
+
+[l-text-focus="true"],
+.l .l-content .l-service-card-frame:hover .l-text {
+  text-shadow: 0px 0px 10px black;
+}
+
+.l .l-content .l-content-service-card img {
+  flex:3;
+  position: inherit;
+  height: 200px;
+  width: 200px;
+  z-index: 10;
+}
+
+.l .l-content .l-content-service-card .l-service-card-frame .l-text {
+  flex:1;
+  position: relative;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+
+.l .l-content-box,
+.l .l-content-card {
+  position: absolute;
+  width: 80vw;
+  height: 70vh;
+  margin: 18vh 10vw;
+  border-radius: 30px;
+
+  font-size: 100px;
+  z-index: 1;
+  backdrop-filter: blur(3px);
+  box-shadow: 0px 0px 5px white;
+}
+
+.l .l-content-card {
+  background-color: var(--bg-primary);
+  opacity: 0.60;
+}

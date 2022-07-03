@@ -1,0 +1,101 @@
+.n {
+  /* background-color: var(--bg-primary); */
+  color: aliceblue;
+  position: fixed;
+  z-index:10000;
+  width: 100vw;
+  height: 4rem;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+}
+
+.n .n-box {
+  display: flex;
+  height: 4rem;
+  width: 120px;
+  align-items: center;
+}
+
+.n .n-box:first-child:hover {
+  cursor: pointer;
+}
+
+.n .n-box:first-child .n-icon .n-icon-light {
+  cursor: pointer;
+  fill: var(--theme-fill-light);
+  opacity: var(--light-opacity);
+}
+
+.n .n-box:first-child .n-icon .n-icon-dark {
+  cursor: pointer;
+  fill: var(--theme-fill-dark);
+  opacity: var(--dark-opacity);
+}
+
+.n .n-box:first-child:hover .n-icon .n-icon-light,
+.n .n-box:first-child:hover .n-icon .n-icon-dark {
+  cursor: pointer;
+  fill: var(--text-primary);
+}
+
+
+.n .n-box:nth-child(2):hover,
+.n .n-box:nth-child(3):hover {
+  background-color: var(--bg-focus);
+  cursor: pointer;
+}
+
+.n .n-box:last-child {
+  position: absolute;
+  padding-left: 10px;
+  left: 0;
+  width: 200px;
+}
+
+.n .n-box:last-child:hover {
+  cursor: pointer;
+}
+
+.n .n-box:first-child {
+  width: 5rem;
+}
+
+.n-link {
+  display: flex;
+  color: #616979;
+  text-decoration: none;
+  transition: var(--transition-speed);
+}
+
+.n-icon {
+  width: 2.5rem;
+  /* height: 2.5rem; */
+  transition: var(--transition-speed);
+  fill:white
+}
+
+.n .n-box p {
+  width: 100%;
+  font-weight: 500;
+}
+
+
+.n .n-box a {
+  padding-left: 1rem;
+}
+
+.n-sidan {
+  display: flex;
+  align-items: center;
+}
+
+.n-sidan p {
+  font-size: 23px;
+  width: 200px;
+}
+
+.n-sidan img {
+  width: 3rem;
+  height: 3rem;
+}
