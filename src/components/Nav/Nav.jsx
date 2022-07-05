@@ -29,7 +29,7 @@ const Nav = (props) => {
       <div className="n-box">
         <p> Cardano</p>
       </div>
-      <div className="n-box" onClick={() => props.changePage("landing")}>
+      <div className="n-box" onClick={() => props.navigatePage("/")}>
         <Sidan />
       </div>
     </div>

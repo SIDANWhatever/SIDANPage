@@ -7,29 +7,35 @@ const Landing = (props) => {
   const [content, setContent] = useState(
     "Lorem idivsum dolor sit amet consectetur adipisicing elit. Animi quasi magnam voluptates fugiat aliquid incidunt placeat iusto eius accusamus. Rerum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi quasi magnam voluptates fugiat aliquid incidunt placeat iusto eius accusamus. Rerum?"
   );
+  const [link, setLink] = useState("/");
 
   const contentDesc = [
     [
       "Plutus Development",
       "Plutus: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis corrupti repudiandae dignissimos aperiam ad culpa, reprehenderit cum tempora magni dolorem odit alias in eius? Beatae eos facere facilis qui recusandae.",
+      "/plutus",
     ],
     [
       "Cardano Stake Pool Operator",
       "Cardano SPO: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis corrupti repudiandae dignissimos aperiam ad culpa, reprehenderit cum tempora magni dolorem odit alias in eius? Beatae eos facere facilis qui recusandae.",
+      "/spo",
     ],
     [
       "Full Stack Software Development",
       "Full Stack Software: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis corrupti repudiandae dignissimos aperiam ad culpa, reprehenderit cum tempora magni dolorem odit alias in eius? Beatae eos facere facilis qui recusandae.",
+      "/fullstack",
     ],
     [
       "UI/UX Research & Design",
       "UI/UX: Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reiciendis corrupti repudiandae dignissimos aperiam ad culpa, reprehenderit cum tempora magni dolorem odit alias in eius? Beatae eos facere facilis qui recusandae.",
+      "/uiux",
     ],
   ];
 
-  const changeContent = (cTitle, cContent) => {
-    setTitle(cTitle);
-    setContent(cContent);
+  const changeContent = (index) => {
+    setTitle(contentDesc[index][0]);
+    setContent(contentDesc[index][1]);
+    setLink(contentDesc[index][2]);
   };
 
   const checkFocus = (text, check) => {
@@ -46,17 +52,22 @@ const Landing = (props) => {
       <div className="l-content-box">
         <div className="l-content">
           <div className="l-content-words">
-            <div className="l-content-words-h">{title}</div>
-            <div className="l-content-words-p">{content}</div>
+            <div className="l-content-words-h">
+              <div>{title}</div>
+            </div>
+            <div className="l-content-words-p">
+              <div>{content}</div>
+              <button onClick={() => props.navigatePage(link)}>
+                Read More
+              </button>
+            </div>
           </div>
           <div className="l-content-services">
             <div className="l-content-service-card-l">
               <div
                 className="l-content-service-card"
                 l-text-focus={checkFocus(contentDesc[0][0], title)}
-                onClick={() =>
-                  changeContent(contentDesc[0][0], contentDesc[0][1])
-                }
+                onClick={() => changeContent(0)}
               >
                 <div
                   className="l-service-card-frame"
@@ -69,9 +80,7 @@ const Landing = (props) => {
               <div
                 className="l-content-service-card"
                 l-text-focus={checkFocus(contentDesc[1][0], title)}
-                onClick={() =>
-                  changeContent(contentDesc[1][0], contentDesc[1][1])
-                }
+                onClick={() => changeContent(1)}
               >
                 <div
                   className="l-service-card-frame"
@@ -86,9 +95,7 @@ const Landing = (props) => {
               <div
                 className="l-content-service-card"
                 l-text-focus={checkFocus(contentDesc[2][0], title)}
-                onClick={() =>
-                  changeContent(contentDesc[2][0], contentDesc[2][1])
-                }
+                onClick={() => changeContent(2)}
               >
                 <div
                   className="l-service-card-frame"
@@ -101,9 +108,7 @@ const Landing = (props) => {
               <div
                 className="l-content-service-card"
                 l-text-focus={checkFocus(contentDesc[3][0], title)}
-                onClick={() =>
-                  changeContent(contentDesc[3][0], contentDesc[3][1])
-                }
+                onClick={() => changeContent(3)}
               >
                 <div
                   className="l-service-card-frame"

@@ -1,0 +1,7 @@
+.wc {
+  position: absolute;
+  height: 50vh;
+  width: 30vw;
+  background-color: var(--bg-primary);
+  border-radius: 20px;
+}

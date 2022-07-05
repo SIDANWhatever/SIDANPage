@@ -8,18 +8,22 @@ body {
   --text-primary: white;
   --text-secondary: aquamarine;
   --bg-primary: #282c34;
+  --bg-p-r: 40;
+  --bg-p-g: 44;
+  --bg-p-b: 52;
   --bg-focus: #1f2228;
   --bg-secondary: white;
   --transition-speed: 600ms;
-  --title-size: 40px;
+  --title-size: 50px;
+  --title-bold: 700;
   --middle-title-size: 30px;
   --post-size: 22px;
-  --content-size: 15px;
+  --content-size: 18px;
+  --content-bold: 700;
   --theme-fill-dark: rgb(209, 120, 209);
   --theme-fill-light: var(--text-primary);
   --light-opacity: 0.5;
   --dark-opacity: 1;
-
 }
 
 [data-theme='light'] {

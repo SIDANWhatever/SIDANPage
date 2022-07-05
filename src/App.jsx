@@ -14,6 +14,7 @@ import {
   poolPage,
   uiuxPage,
 } from "./features/page/pageSlice";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   const dispatch = useDispatch();
@@ -34,18 +35,20 @@ function App() {
     }
   };
 
-  let mainPage;
-  if (page == "landing") {
-    mainPage = <Landing changePage={changePage} />;
-  } else {
-    mainPage = <FullStack />;
-  }
+  const navigatePage = (pageLink) => {
+    window.location.href = pageLink;
+  };
 
   return (
     <div className="App" data-theme={theme}>
-      <Nav changePage={changePage} />
+      <Nav changePage={changePage} navigatePage={navigatePage} />
       <img src={BG} alt="" className="app-bg" />
-      {mainPage}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Landing navigatePage={navigatePage} />} />
+          <Route path="/plutus" element={<Plutus />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }

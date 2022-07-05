@@ -18,24 +18,38 @@
   display: flex;
   flex-direction: column;
   text-align: left;
-
-  /* margin: 25px; */
 }
 
 .l .l-content .l-content-words-h {
   position: relative;
   padding: 30px 0 0 30px;
   flex: 1;
-  font-size: 50px;
-  font-weight: 700;
+  font-size: var(--title-size);
+  font-weight: var(--title-bold);
+  margin-top: auto;
+  display: flex;
+  align-items: center;
 }
 
 .l .l-content .l-content-words-p {
   position: relative;
   padding: 0 30px 0 30px;
-  flex: 5;
+  flex: 3;
   font-size: 25px;
   font-weight: 300;
+}
+
+
+.l .l-content .l-content-words-p button {
+  align-items: top;
+  height: 50px;
+  width: 180px;
+  margin-top: 50px;
+  border-radius: 15px;
+  color: var(--text-secondary);
+  background-color: rgba(54, 59, 59, 0.7);
+  font-weight: 800;
+  flex: 1;
 }
 
 .l .l-content .l-content-services {

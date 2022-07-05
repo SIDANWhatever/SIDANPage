@@ -1,0 +1,145 @@
+.p {
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+  display: flex;
+}
+
+.p .p-main {
+  z-index: 1;
+  margin: 15vh 10vw;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.p .p-header {
+  display:flex;
+  justify-content: space-between;
+  z-index: 1;
+  margin-bottom: 40px;
+}
+
+.p .p-header .p-title {
+  flex:2;
+  color: var(--text-primary);
+  font-size: var(--title-size);
+  font-weight: var(--title-bold);
+  text-align: left;
+}
+
+.p .p-header .p-cases {
+  flex:3;
+  display: flex;
+  justify-content: right;
+}
+
+.p .p-header .p-cases .p-demos-space {
+  flex: 1;
+}
+
+.p .p-header .p-cases .p-wallet,
+.p .p-header .p-cases .p-demos {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  margin: 6px;
+  background-color: rgba(var(--bg-p-r),var(--bg-p-g),var(--bg-p-b),0.5);
+  border-radius: 5px;
+  color: var(--text-primary);
+  font-size: var(--content-size);
+  font-weight: var(--title-bold);
+}
+
+.p .p-header .p-cases .p-wallet {
+  border: 2px solid white;
+}
+
+.p .p-header .p-cases .p-demos:hover,
+.p .p-header .p-cases .p-wallet:hover {
+  background-color: var(--bg-focus);
+  box-shadow: 0px 0px 10px var(--text-primary);
+  cursor: pointer;
+}
+
+.p .p-wallet {
+  color: aliceblue;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30%;
+  height: 80%;
+  background-color: var(--bg-primary);
+  flex-direction: column;
+  border-radius: 30px;
+}
+
+.p .p-wallet-box {
+  font-size: 28px;
+  margin: 15px 10px;
+  display: flex;
+  width: 100%;
+  height: 60px;
+}
+
+.p .p-wallet-icon-box {
+  flex: 3;
+  margin-left: 40px;
+  height: 60px;
+  z-index: 100;
+  background-color: var(--bg-focus);
+  border-radius: 5px 0 0 5px;
+  border-top: 2px outset white;
+  border-bottom: 2px outset white;
+  border-left: 2px outset white;
+}
+
+.p .p-wallet-icon {
+  width: 40px;
+  height: 40px;
+  padding: 10px;
+}
+
+.p .p-name {
+  height: 100%;
+  flex: 8;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  background-color: var(--bg-focus);
+  border-radius: 0 5px 5px 0;
+  border-top: 2px outset white;
+  border-bottom: 2px outset white;
+  border-right: 2px outset white;
+  margin-right: 40px;
+}
+
+.p .p-wallet-icon-box:hover,
+.p .p-name:hover {
+  cursor: pointer;
+}
+
+
+.p .p-name-text {
+  font-weight: var(--title-bold);
+}
+
+
+.p .p-content-box,
+.p .p-content-card {
+  position: relative;
+  width: 80vw;
+  height: 60vh;
+  border-radius: 30px;
+
+  font-size: 100px;
+  z-index: 1;
+  backdrop-filter: blur(3px);
+  box-shadow: 0px 0px 5px white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
