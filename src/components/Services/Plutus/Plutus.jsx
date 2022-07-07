@@ -100,6 +100,9 @@ export class Plutus extends Component {
       transactionIndxLocked: 0,
       lovelaceLocked: 3000000,
       manualFee: 900000,
+
+      demoShown: "vesting",
+      selectedWallet: false,
     };
 
     /**
@@ -142,7 +145,7 @@ export class Plutus extends Component {
 
   pollWallets = (count = 0) => {
     console.log(window.cardano);
-    const walletsToInclude = ["yoroi", "eternl", "nami", "typhoncip30"];
+    const walletsToInclude = ["eternl", "nami", "typhoncip30"];
     const wallets = [];
     for (const key in window.cardano) {
       if (
@@ -153,7 +156,7 @@ export class Plutus extends Component {
         wallets.push(key);
       }
     }
-    if (wallets.length !== 4 && count < 3) {
+    if (wallets.length !== 3 && count < 3) {
       setTimeout(() => {
         this.pollWallets(count + 1);
       }, 2000);
@@ -446,6 +449,7 @@ export class Plutus extends Component {
     this.setState(
       {
         whichWalletSelected: item,
+        selectedWallet: true,
       },
       () => {
         this.refreshData();
@@ -453,9 +457,36 @@ export class Plutus extends Component {
     );
   };
 
+  demo = () => {
+    if (this.state.demoShown === "vesting") {
+      return (
+        <div className="p-vesting">
+          <div></div>
+        </div>
+      );
+    } else if (this.state.demoShown === "token") {
+      return <div>hihihihi</div>;
+    } else {
+      return <div>invalid select</div>;
+    }
+  };
+
+  changeDemo = (item) => {
+    this.setState({ demoShown: item });
+  };
+
+  checkDemoFocus = (input, check) => {
+    if (input === check) {
+      return "true";
+    } else {
+      return "false";
+    }
+  };
+
   async componentDidMount() {
     this.pollWallets();
     await this.refreshData();
+    console.log(this.state.demoShown);
   }
 
   render() {
@@ -466,18 +497,42 @@ export class Plutus extends Component {
             <div className="p-title">Plutus DAPP Demo</div>
             <div className="p-cases">
               <div className="p-demos-space"></div>
-              <div className="p-demos">
+              <div
+                className="p-demos"
+                onClick={() => this.changeDemo("vesting")}
+                p-demo-focus={this.checkDemoFocus(
+                  this.state.demoShown,
+                  "vesting"
+                )}
+              >
                 <div>Simple Vesting</div>
               </div>
-              <div className="p-demos">
+              <div
+                className="p-demos"
+                onClick={() => this.changeDemo("token")}
+                p-demo-focus={this.checkDemoFocus(
+                  this.state.demoShown,
+                  "token"
+                )}
+              >
                 <div>Token Distributing</div>
               </div>
-              <div className="p-wallet" onClick={() => this.connectWallet()}>
-                {this.state.walletFound ? (
-                  <img
-                    src={window.cardano[this.state.whichWalletSelected].icon}
-                    alt=""
-                  />
+              <div
+                className="p-wallet"
+                onClick={() => {
+                  this.setState({ selectedWallet: false });
+                }}
+              >
+                {this.state.walletIsEnabled ? (
+                  <div>
+                    <img
+                      src={window.cardano[this.state.whichWalletSelected].icon}
+                      alt=""
+                    />
+                    <div>
+                      {this.state.networkId === 0 ? "Mainnet" : "Testnet"}
+                    </div>
+                  </div>
                 ) : (
                   <div>Connect Wallet</div>
                 )}
@@ -485,27 +540,31 @@ export class Plutus extends Component {
             </div>
           </div>
           <div className="p-content-card">
-            <div className="p-wallet">
-              {this.state.wallets.map((item) => (
-                <div
-                  className="p-wallet-box"
-                  onClick={() => this.selectWallet(item)}
-                  key={this.state.wallets[item]}
-                >
-                  <div className="p-wallet-icon-box">
-                    <img
-                      src={window.cardano[item].icon}
-                      className="p-wallet-icon"
-                    />
-                  </div>
-                  <div className="p-name">
-                    <div className="p-name-text">
-                      {window.cardano[item].name}
+            {this.state.selectedWallet ? (
+              <div className="p-d-main">{this.demo()}</div>
+            ) : (
+              <div className="p-wallet">
+                {this.state.wallets.map((item) => (
+                  <div
+                    className="p-wallet-box"
+                    onClick={() => this.selectWallet(item)}
+                    key={this.state.wallets[item]}
+                  >
+                    <div className="p-wallet-icon-box">
+                      <img
+                        src={window.cardano[item].icon}
+                        className="p-wallet-icon"
+                      />
+                    </div>
+                    <div className="p-name">
+                      <div className="p-name-text">
+                        {window.cardano[item].name}
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

@@ -45,8 +45,9 @@ function App() {
       <img src={BG} alt="" className="app-bg" />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Landing navigatePage={navigatePage} />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/plutus" element={<Plutus />} />
+          <Route path="/spo" element={<Pool />} />
         </Routes>
       </BrowserRouter>
     </div>

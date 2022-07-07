@@ -1,8 +1,10 @@
 import SidanIcon from "../Nav/icons/SidanIcon.png";
 import "./landing.css";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Landing = (props) => {
+  let navigate = useNavigate();
   const [title, setTitle] = useState("SIDAN");
   const [content, setContent] = useState(
     "Lorem idivsum dolor sit amet consectetur adipisicing elit. Animi quasi magnam voluptates fugiat aliquid incidunt placeat iusto eius accusamus. Rerum?Lorem ipsum dolor sit amet consectetur adipisicing elit. Animi quasi magnam voluptates fugiat aliquid incidunt placeat iusto eius accusamus. Rerum?"
@@ -46,6 +48,10 @@ const Landing = (props) => {
     }
   };
 
+  const routerNavigate = (page) => {
+    navigate(page, { replace: true });
+  };
+
   return (
     <div className="l">
       <div className="l-content-card"></div>
@@ -57,9 +63,8 @@ const Landing = (props) => {
             </div>
             <div className="l-content-words-p">
               <div>{content}</div>
-              <button onClick={() => props.navigatePage(link)}>
-                Read More
-              </button>
+              {/* <button onClick={() => props.navigatePage(link)}> */}
+              <button onClick={() => routerNavigate(link)}>Read More</button>
             </div>
           </div>
           <div className="l-content-services">
