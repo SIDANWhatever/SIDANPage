@@ -53,6 +53,11 @@ import {
   MintAssets,
 } from "@emurgo/cardano-serialization-lib-asmjs";
 import WalletChooser from "./PlutusComponents/WalletChooser";
+import {
+  initTransactionBuilder,
+  getTxUnspentOutputs,
+  buildSendADATransaction,
+} from "./Transactions";
 // import Loader from "../Loader";
 let blake = require("blakejs");
 let Buffer = require("buffer/").Buffer;
@@ -75,6 +80,7 @@ export class Plutus extends Component {
       walletAPIVersion: undefined,
       wallets: [],
 
+      // Own API info
       networkId: undefined,
       Utxos: undefined,
       CollatUtxos: undefined,
@@ -88,8 +94,15 @@ export class Plutus extends Component {
       txBodyCborHex_signed: "",
       submittedTxHash: "",
 
+      // To address:
       addressBech32SendADA: "",
+
+      // ADA to be sent:
       lovelaceToSend: 3000000,
+
+      // vestingDeadline
+      lovelaceToSend: 0,
+
       assetNameHex: "",
       assetPolicyIdHex: "",
       assetAmountToSend: 5,
@@ -103,6 +116,22 @@ export class Plutus extends Component {
 
       demoShown: "vesting",
       selectedWallet: false,
+
+      demoInfo: [
+        ["Give", 15000000, "7 Jul 2022"],
+        ["Give", 30000000, "8 Jul 2022"],
+        ["Get", 15000000, "10 Jul 2022"],
+      ],
+
+      allProtoParam: {
+        iMinFeeA: "44",
+        iMinFeeB: "155381",
+        iPoolDeposit: "500000000",
+        iKeyDeposit: "2000000",
+        iCoinsPerUtxoWord: "34482",
+        iMaxValSize: 5000,
+        iMaxTxSize: 16384,
+      },
     };
 
     /**
@@ -342,6 +371,7 @@ export class Plutus extends Component {
     } catch (err) {
       console.log(err);
     }
+    console.log(this.state.balance);
   };
 
   getChangeAddress = async () => {
@@ -461,11 +491,96 @@ export class Plutus extends Component {
     if (this.state.demoShown === "vesting") {
       return (
         <div className="p-vesting">
-          <div></div>
+          <div className="p-v-app">
+            <div className="p-v-box">
+              <div className="p-v-words">
+                <div className="p-v-title">Vesting Demo</div>
+                <div className="p-v-desc">
+                  Giving the recipient ADA once the deadline is passed, redeem
+                  anytime before deadline
+                </div>
+              </div>
+              <div className="p-v-fields">
+                <div className="p-v-receive-b">
+                  <input
+                    type="text"
+                    className="p-v-input"
+                    placeholder="Please input receiver wallet address"
+                    onChange={(event) => {
+                      this.setState({
+                        addressBech32SendADA: event.target.value,
+                      });
+                    }}
+                  />
+                </div>
+                <div className="p-v-amount-b">
+                  <input
+                    type="text"
+                    className="p-v-input"
+                    placeholder={
+                      "Please input ADA amount (Balance: " +
+                      (this.state.balance / 1000000).toString() +
+                      ")"
+                    }
+                    onChange={(event) => {
+                      this.setState({
+                        lovelaceToSend: event.target.value,
+                      });
+                    }}
+                  />
+                </div>
+                <div className="p-v-ddl-b">
+                  <input
+                    type="datetime-local"
+                    className="p-v-input"
+                    placeholder="Please select the deadline"
+                    onChange={(event) => {
+                      this.setState({
+                        vestingDeadline: event.target.value,
+                      });
+                      console.log(this.state.vestingDeadline);
+                    }}
+                  />
+                </div>
+                <div className="p-v-submit-b">
+                  <button
+                    className="p-v-button"
+                    onClick={() => {
+                      buildSendADATransaction(
+                        this.state.allProtoParam,
+                        this.API,
+                        this.state.Utxos,
+                        this.state.addressBech32SendADA,
+                        this.state.changeAddress,
+                        this.state.lovelaceToSend
+                      );
+                    }}
+                  >
+                    Submit Transaction
+                  </button>
+                </div>
+                <div className="p-v-spacer"></div>
+              </div>
+            </div>
+          </div>
+          <div className="p-v-info">
+            <div className="p-v-i-row-h">
+              <div className="p-v-i-type">Type</div>
+              <div className="p-v-i-amount">Amount</div>
+              <div className="p-v-i-ddl">Deadline</div>
+            </div>
+            {this.state.demoInfo.map((item) => (
+              <div className="p-v-i-row">
+                <div className="p-v-i-type">{item[0]}</div>
+                <div className="p-v-i-amount">{item[1] / 1000000} ADA</div>
+                <div className="p-v-i-ddl">{item[2]}</div>
+              </div>
+            ))}
+          </div>
         </div>
       );
     } else if (this.state.demoShown === "token") {
-      return <div>hihihihi</div>;
+      return <div className="p-token">Coming Soon</div>;
     } else {
       return <div>invalid select</div>;
     }
@@ -486,7 +601,6 @@ export class Plutus extends Component {
   async componentDidMount() {
     this.pollWallets();
     await this.refreshData();
-    console.log(this.state.demoShown);
   }
 
   render() {
@@ -530,7 +644,7 @@ export class Plutus extends Component {
                       alt=""
                     />
                     <div>
-                      {this.state.networkId === 0 ? "Mainnet" : "Testnet"}
+                      {this.state.networkId === 1 ? "Mainnet" : "Testnet"}
                     </div>
                   </div>
                 ) : (

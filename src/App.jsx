@@ -48,6 +48,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/plutus" element={<Plutus />} />
           <Route path="/spo" element={<Pool />} />
+          <Route path="/fullstack" element={<FullStack />} />
         </Routes>
       </BrowserRouter>
     </div>
