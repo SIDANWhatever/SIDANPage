@@ -57,6 +57,7 @@ import {
   initTransactionBuilder,
   getTxUnspentOutputs,
   buildSendADATransaction,
+  buildSendAdaToPlutusScript,
 } from "./Transactions";
 // import Loader from "../Loader";
 let blake = require("blakejs");
@@ -106,7 +107,8 @@ export class Plutus extends Component {
       assetNameHex: "",
       assetPolicyIdHex: "",
       assetAmountToSend: 5,
-      addressScriptBech32: "",
+      addressScriptBech32:
+        "addr_test1wq7vquvdhrq9w30czz6r8xxyvzpkkmln5l20c29wmt6stjchnqw4k",
       datumStr: "",
       plutusScriptCborHex: "",
       transactionIdLocked: "",
@@ -131,6 +133,40 @@ export class Plutus extends Component {
         iCoinsPerUtxoWord: "34482",
         iMaxValSize: 5000,
         iMaxTxSize: 16384,
+      },
+
+      vestingData: {
+        addressScriptBech32: "",
+        changeAddress: "",
+        datumStr: {
+          constructor: 0,
+          fields: [
+            {
+              initiator: "",
+            },
+            {
+              beneficiary: "",
+            },
+            {
+              deadline: 0,
+            },
+          ],
+        },
+        lovelaceLocked: 0,
+        utxos: "",
+      },
+
+      redeemData: {
+        addressScriptBech32: "",
+        changeAddress: "",
+        transactionIdLocked: "",
+        transactionIndxLocked: "",
+        lovelaceLocked: 0,
+        manualFee: 0,
+        plutusScriptCborHex: "",
+        CollatUtxos: "",
+        datumStr: "",
+        utxos: "",
       },
     };
 
@@ -487,6 +523,45 @@ export class Plutus extends Component {
     );
   };
 
+  submitVesting = () => {
+    this.setState(
+      {
+        datumStr: {
+          constructor: 0,
+          fields: [
+            {
+              initiator: this.state.changeAddress,
+            },
+            {
+              beneficiary: this.state.addressBech32SendADA,
+            },
+            {
+              deadline: this.state.vestingDeadline,
+            },
+          ],
+        },
+        vestingData: {
+          addressScriptBech32: this.state.addressScriptBech32,
+          changeAddress: this.state.changeAddress,
+          datumStr: this.state.datumStr,
+          lovelaceLocked: this.state.lovelaceLocked,
+          utxos: this.state.Utxos,
+        },
+      },
+      () => {
+        this.refreshData().then(
+          () =>
+            buildSendAdaToPlutusScript(
+              this.state.allProtoParam,
+              this.API,
+              this.state.vestingData
+            ),
+          console.log("Transaction submitted")
+        );
+      }
+    );
+  };
+
   demo = () => {
     if (this.state.demoShown === "vesting") {
       return (
@@ -524,7 +599,7 @@ export class Plutus extends Component {
                     }
                     onChange={(event) => {
                       this.setState({
-                        lovelaceToSend: event.target.value,
+                        lovelaceLocked: event.target.value,
                       });
                     }}
                   />
@@ -535,8 +610,9 @@ export class Plutus extends Component {
                     className="p-v-input"
                     placeholder="Please select the deadline"
                     onChange={(event) => {
+                      var time = new Date(event.target.value);
                       this.setState({
-                        vestingDeadline: event.target.value,
+                        vestingData: time.getTime(),
                       });
                       console.log(this.state.vestingDeadline);
                     }}
@@ -546,14 +622,7 @@ export class Plutus extends Component {
                   <button
                     className="p-v-button"
                     onClick={() => {
-                      buildSendADATransaction(
-                        this.state.allProtoParam,
-                        this.API,
-                        this.state.Utxos,
-                        this.state.addressBech32SendADA,
-                        this.state.changeAddress,
-                        this.state.lovelaceToSend
-                      );
+                      this.submitVesting();
                     }}
                   >
                     Submit Transaction

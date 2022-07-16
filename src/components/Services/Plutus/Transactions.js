@@ -231,68 +231,63 @@ export const buildSendADATransaction = async (initParam, iAPI, iUtxos, iAddressB
 //   // this.setState({txBodyCborHex_unsigned, txBody})
 // };
 
-// buildSendAdaToPlutusScript = async () => {
-//   const txBuilder = await this.initTransactionBuilder();
-//   const ScriptAddress = Address.from_bech32(this.state.addressScriptBech32);
-//   const shelleyChangeAddress = Address.from_bech32(this.state.changeAddress);
+export const buildSendAdaToPlutusScript = async (initParam, iAPI, vestingData) => {
+  const txBuilder = await initTransactionBuilder(initParam);
+  const ScriptAddress = Address.from_bech32(vestingData.addressScriptBech32);
+  const shelleyChangeAddress = Address.from_bech32(vestingData.changeAddress);
 
-//   let txOutputBuilder = TransactionOutputBuilder.new();
-//   txOutputBuilder = txOutputBuilder.with_address(ScriptAddress);
-//   const dataHash = hash_plutus_data(
-//     PlutusData.new_integer(BigInt.from_str(this.state.datumStr))
-//   );
-//   txOutputBuilder = txOutputBuilder.with_data_hash(dataHash);
+  let txOutputBuilder = TransactionOutputBuilder.new();
+  txOutputBuilder = txOutputBuilder.with_address(ScriptAddress);
+  const dataHash = hash_plutus_data(
+    PlutusData.new_integer(BigInt.from_str(vestingData.datumStr))
+  );
+  txOutputBuilder = txOutputBuilder.with_data_hash(dataHash);
 
-//   txOutputBuilder = txOutputBuilder.next();
+  txOutputBuilder = txOutputBuilder.next();
 
-//   txOutputBuilder = txOutputBuilder.with_value(
-//     Value.new(BigNum.from_str(this.state.lovelaceToSend.toString()))
-//   );
-//   const txOutput = txOutputBuilder.build();
+  txOutputBuilder = txOutputBuilder.with_value(
+    Value.new(BigNum.from_str(vestingData.lovelaceToSend.toString()))
+  );
+  const txOutput = txOutputBuilder.build();
 
-//   txBuilder.add_output(txOutput);
+  txBuilder.add_output(txOutput);
 
-//   // Find the available UTXOs in the wallet and
-//   // us them as Inputs
-//   const txUnspentOutputs = await this.getTxUnspentOutputs();
-//   txBuilder.add_inputs_from(txUnspentOutputs, 2);
+  // Find the available UTXOs in the wallet and
+  // us them as Inputs
+  const txUnspentOutputs = await getTxUnspentOutputs(vestingData.utxos);
+  txBuilder.add_inputs_from(txUnspentOutputs, 2);
 
-//   // calculate the min fee required and send any change to an address
-//   txBuilder.add_change_if_needed(shelleyChangeAddress);
+  // calculate the min fee required and send any change to an address
+  txBuilder.add_change_if_needed(shelleyChangeAddress);
 
-//   // once the transaction is ready, we build it to get the tx body without witnesses
-//   const txBody = txBuilder.build();
+  // once the transaction is ready, we build it to get the tx body without witnesses
+  const txBody = txBuilder.build();
 
-//   // Tx witness
-//   const transactionWitnessSet = TransactionWitnessSet.new();
+  // Tx witness
+  const transactionWitnessSet = TransactionWitnessSet.new();
 
-//   const tx = Transaction.new(
-//     txBody,
-//     TransactionWitnessSet.from_bytes(transactionWitnessSet.to_bytes())
-//   );
+  const tx = Transaction.new(
+    txBody,
+    TransactionWitnessSet.from_bytes(transactionWitnessSet.to_bytes())
+  );
 
-//   let txVkeyWitnesses = await this.API.signTx(
-//     Buffer.from(tx.to_bytes(), "utf8").toString("hex"),
-//     true
-//   );
-//   txVkeyWitnesses = TransactionWitnessSet.from_bytes(
-//     Buffer.from(txVkeyWitnesses, "hex")
-//   );
+  let txVkeyWitnesses = await iAPI.signTx(
+    Buffer.from(tx.to_bytes(), "utf8").toString("hex"),
+    true
+  );
+  txVkeyWitnesses = TransactionWitnessSet.from_bytes(
+    Buffer.from(txVkeyWitnesses, "hex")
+  );
 
-//   transactionWitnessSet.set_vkeys(txVkeyWitnesses.vkeys());
+  transactionWitnessSet.set_vkeys(txVkeyWitnesses.vkeys());
 
-//   const signedTx = Transaction.new(tx.body(), transactionWitnessSet);
+  const signedTx = Transaction.new(tx.body(), transactionWitnessSet);
 
-//   const submittedTxHash = await this.API.submitTx(
-//     Buffer.from(signedTx.to_bytes(), "utf8").toString("hex")
-//   );
-//   console.log(submittedTxHash);
-//   this.setState({
-//     submittedTxHash: submittedTxHash,
-//     transactionIdLocked: submittedTxHash,
-//     lovelaceLocked: this.state.lovelaceToSend,
-//   });
-// };
+  const submittedTxHash = await iAPI.submitTx(
+    Buffer.from(signedTx.to_bytes(), "utf8").toString("hex")
+  );
+  console.log(submittedTxHash);
+};
 
 // buildSendTokenToPlutusScript = async () => {
 //   const txBuilder = await this.initTransactionBuilder();
@@ -372,133 +367,133 @@ export const buildSendADATransaction = async (initParam, iAPI, iUtxos, iAddressB
 //   });
 // };
 
-// buildRedeemAdaFromPlutusScript = async () => {
-//   const txBuilder = await this.initTransactionBuilder();
-//   const ScriptAddress = Address.from_bech32(this.state.addressScriptBech32);
-//   const shelleyChangeAddress = Address.from_bech32(this.state.changeAddress);
+export const buildRedeemAdaFromPlutusScript = async (initParam, iAPI, redeemData) => {
+  const txBuilder = await initTransactionBuilder(initParam);
+  const ScriptAddress = Address.from_bech32(redeemData.addressScriptBech32);
+  const shelleyChangeAddress = Address.from_bech32(redeemData.changeAddress);
 
-//   txBuilder.add_input(
-//     ScriptAddress,
-//     TransactionInput.new(
-//       TransactionHash.from_bytes(
-//         Buffer.from(this.state.transactionIdLocked, "hex")
-//       ),
-//       this.state.transactionIndxLocked.toString()
-//     ),
-//     Value.new(BigNum.from_str(this.state.lovelaceLocked.toString()))
-//   ); // how much lovelace is at that UTXO
+  txBuilder.add_input(
+    ScriptAddress,
+    TransactionInput.new(
+      TransactionHash.from_bytes(
+        Buffer.from(redeemData.transactionIdLocked, "hex")
+      ),
+      redeemData.transactionIndxLocked.toString()
+    ),
+    Value.new(BigNum.from_str(redeemData.lovelaceLocked.toString()))
+  ); // how much lovelace is at that UTXO
 
-//   txBuilder.set_fee(BigNum.from_str(Number(this.state.manualFee).toString()));
+  txBuilder.set_fee(BigNum.from_str(Number(redeemData.manualFee).toString()));
 
-//   const scripts = PlutusScripts.new();
-//   scripts.add(
-//     PlutusScript.from_bytes(
-//       Buffer.from(this.state.plutusScriptCborHex, "hex")
-//     )
-//   ); //from cbor of plutus script
+  const scripts = PlutusScripts.new();
+  scripts.add(
+    PlutusScript.from_bytes(
+      Buffer.from(redeemData.plutusScriptCborHex, "hex")
+    )
+  ); //from cbor of plutus script
 
-//   // Add outputs
-//   const outputVal =
-//     this.state.lovelaceLocked.toString() - Number(this.state.manualFee);
-//   const outputValStr = outputVal.toString();
-//   txBuilder.add_output(
-//     TransactionOutput.new(
-//       shelleyChangeAddress,
-//       Value.new(BigNum.from_str(outputValStr))
-//     )
-//   );
+  // Add outputs
+  const outputVal =
+  redeemData.lovelaceLocked.toString() - Number(redeemData.manualFee);
+  const outputValStr = outputVal.toString();
+  txBuilder.add_output(
+    TransactionOutput.new(
+      shelleyChangeAddress,
+      Value.new(BigNum.from_str(outputValStr))
+    )
+  );
 
-//   // once the transaction is ready, we build it to get the tx body without witnesses
-//   const txBody = txBuilder.build();
+  // once the transaction is ready, we build it to get the tx body without witnesses
+  const txBody = txBuilder.build();
 
-//   const collateral = this.state.CollatUtxos;
-//   const inputs = TransactionInputs.new();
-//   collateral.forEach((utxo) => {
-//     inputs.add(utxo.input());
-//   });
+  const collateral = redeemData.CollatUtxos;
+  const inputs = TransactionInputs.new();
+  collateral.forEach((utxo) => {
+    inputs.add(utxo.input());
+  });
 
-//   let datums = PlutusList.new();
-//   // datums.add(PlutusData.from_bytes(Buffer.from(this.state.datumStr, "utf8")))
-//   datums.add(PlutusData.new_integer(BigInt.from_str(this.state.datumStr)));
+  let datums = PlutusList.new();
+  // datums.add(PlutusData.from_bytes(Buffer.from(this.state.datumStr, "utf8")))
+  datums.add(PlutusData.new_integer(BigInt.from_str(redeemData.datumStr)));
 
-//   const redeemers = Redeemers.new();
+  const redeemers = Redeemers.new();
 
-//   const data = PlutusData.new_constr_plutus_data(
-//     ConstrPlutusData.new(BigNum.from_str("0"), PlutusList.new())
-//   );
+  const data = PlutusData.new_constr_plutus_data(
+    ConstrPlutusData.new(BigNum.from_str("0"), PlutusList.new())
+  );
 
-//   const redeemer = Redeemer.new(
-//     RedeemerTag.new_spend(),
-//     BigNum.from_str("0"),
-//     data,
-//     ExUnits.new(BigNum.from_str("7000000"), BigNum.from_str("3000000000"))
-//   );
+  const redeemer = Redeemer.new(
+    RedeemerTag.new_spend(),
+    BigNum.from_str("0"),
+    data,
+    ExUnits.new(BigNum.from_str("7000000"), BigNum.from_str("3000000000"))
+  );
 
-//   redeemers.add(redeemer);
+  redeemers.add(redeemer);
 
-//   // Tx witness
-//   const transactionWitnessSet = TransactionWitnessSet.new();
+  // Tx witness
+  const transactionWitnessSet = TransactionWitnessSet.new();
 
-//   transactionWitnessSet.set_plutus_scripts(scripts);
-//   transactionWitnessSet.set_plutus_data(datums);
-//   transactionWitnessSet.set_redeemers(redeemers);
+  transactionWitnessSet.set_plutus_scripts(scripts);
+  transactionWitnessSet.set_plutus_data(datums);
+  transactionWitnessSet.set_redeemers(redeemers);
 
-//   const cost_model_vals = [
-//     197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32,
-//     2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773,
-//     100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32,
-//     150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118,
-//     0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1,
-//     136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000,
-//     32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276,
-//     1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32,
-//     150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1,
-//     150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1,
-//     2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0,
-//     1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000,
-//     32, 150000, 32, 3345831, 1, 1,
-//   ];
+  const cost_model_vals = [
+    197209, 0, 1, 1, 396231, 621, 0, 1, 150000, 1000, 0, 1, 150000, 32,
+    2477736, 29175, 4, 29773, 100, 29773, 100, 29773, 100, 29773, 100, 29773,
+    100, 29773, 100, 100, 100, 29773, 100, 150000, 32, 150000, 32, 150000, 32,
+    150000, 1000, 0, 1, 150000, 32, 150000, 1000, 0, 8, 148000, 425507, 118,
+    0, 1, 1, 150000, 1000, 0, 8, 150000, 112536, 247, 1, 150000, 10000, 1,
+    136542, 1326, 1, 1000, 150000, 1000, 1, 150000, 32, 150000, 32, 150000,
+    32, 1, 1, 150000, 1, 150000, 4, 103599, 248, 1, 103599, 248, 1, 145276,
+    1366, 1, 179690, 497, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32,
+    150000, 32, 150000, 32, 148000, 425507, 118, 0, 1, 1, 61516, 11218, 0, 1,
+    150000, 32, 148000, 425507, 118, 0, 1, 1, 148000, 425507, 118, 0, 1, 1,
+    2477736, 29175, 4, 0, 82363, 4, 150000, 5000, 0, 1, 150000, 32, 197209, 0,
+    1, 1, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000, 32, 150000,
+    32, 150000, 32, 3345831, 1, 1,
+  ];
 
-//   const costModel = CostModel.new();
-//   cost_model_vals.forEach((x, i) => costModel.set(i, Int.new_i32(x)));
+  const costModel = CostModel.new();
+  cost_model_vals.forEach((x, i) => costModel.set(i, Int.new_i32(x)));
 
-//   const costModels = Costmdls.new();
-//   costModels.insert(Language.new_plutus_v1(), costModel);
+  const costModels = Costmdls.new();
+  costModels.insert(Language.new_plutus_v1(), costModel);
 
-//   const scriptDataHash = hash_script_data(redeemers, costModels, datums);
-//   txBody.set_script_data_hash(scriptDataHash);
+  const scriptDataHash = hash_script_data(redeemers, costModels, datums);
+  txBody.set_script_data_hash(scriptDataHash);
 
-//   txBody.set_collateral(inputs);
+  txBody.set_collateral(inputs);
 
-//   const baseAddress = BaseAddress.from_address(shelleyChangeAddress);
-//   const requiredSigners = Ed25519KeyHashes.new();
-//   requiredSigners.add(baseAddress.payment_cred().to_keyhash());
+  const baseAddress = BaseAddress.from_address(shelleyChangeAddress);
+  const requiredSigners = Ed25519KeyHashes.new();
+  requiredSigners.add(baseAddress.payment_cred().to_keyhash());
 
-//   txBody.set_required_signers(requiredSigners);
+  txBody.set_required_signers(requiredSigners);
 
-//   const tx = Transaction.new(
-//     txBody,
-//     TransactionWitnessSet.from_bytes(transactionWitnessSet.to_bytes())
-//   );
+  const tx = Transaction.new(
+    txBody,
+    TransactionWitnessSet.from_bytes(transactionWitnessSet.to_bytes())
+  );
 
-//   let txVkeyWitnesses = await this.API.signTx(
-//     Buffer.from(tx.to_bytes(), "utf8").toString("hex"),
-//     true
-//   );
-//   txVkeyWitnesses = TransactionWitnessSet.from_bytes(
-//     Buffer.from(txVkeyWitnesses, "hex")
-//   );
+  let txVkeyWitnesses = await iAPI.signTx(
+    Buffer.from(tx.to_bytes(), "utf8").toString("hex"),
+    true
+  );
+  txVkeyWitnesses = TransactionWitnessSet.from_bytes(
+    Buffer.from(txVkeyWitnesses, "hex")
+  );
 
-//   transactionWitnessSet.set_vkeys(txVkeyWitnesses.vkeys());
+  transactionWitnessSet.set_vkeys(txVkeyWitnesses.vkeys());
 
-//   const signedTx = Transaction.new(tx.body(), transactionWitnessSet);
+  const signedTx = Transaction.new(tx.body(), transactionWitnessSet);
 
-//   const submittedTxHash = await this.API.submitTx(
-//     Buffer.from(signedTx.to_bytes(), "utf8").toString("hex")
-//   );
-//   console.log(submittedTxHash);
-//   this.setState({ submittedTxHash });
-// };
+  const submittedTxHash = await iAPI.submitTx(
+    Buffer.from(signedTx.to_bytes(), "utf8").toString("hex")
+  );
+  console.log(submittedTxHash);
+  this.setState({ submittedTxHash });
+};
 
 // buildRedeemTokenFromPlutusScript = async () => {
 //   const txBuilder = await this.initTransactionBuilder();
@@ -794,4 +789,3 @@ export const buildSendADATransaction = async (initParam, iAPI, iUtxos, iAddressB
 //   //   lovelaceLocked: this.state.lovelaceToSend,
 //   // });
 // };
-
